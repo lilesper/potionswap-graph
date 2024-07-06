@@ -1,105 +1,35 @@
-type NewPair @entity {
-  id: ID!
-  address: String
-  owner: String
-  blockNumber: BigInt
-  createdAt: BigInt
-  updatedAt: BigInt
-  createdTx: String
-  nft: String
-  initialBondingCurveAddress: String
-  initialAssetRecipient: String
-  poolType: BigInt
-  initialDelta: BigInt
-  initialFeeMultiplier: BigDecimal
-  initialSpotPrice: BigInt!
-  initialNFTIdInventory: [BigInt!]
-  initialInventoryCount: BigInt
-  initialETHLiquidity: BigInt
-  pair: Pair @derivedFrom(field:"initialAttributes")
-}
 
 type Pair @entity {
   id: ID!
-  owner: String
-  createdTx: String
-  createdAt: BigInt
-  updatedAt: BigInt
-  nft: String
-  bondingCurveAddress: String
-  assetRecipient: String
-  poolType: BigInt
-  delta: BigInt
-  feeMultiplier: BigDecimal
-  spotPrice: BigInt
-  nftIdInventory: [BigInt!]
-  inventoryCount: BigInt
-  ethLiquidity: BigInt
-  initialAttributes: NewPair
+  owner: String!
+  createdTx: String!
+  nft: String!
+  bondingCurveAddress: String!
+  assetRecipient: String!
+  poolType: BigInt!
+  delta: BigInt!
+  feeMultiplier: BigDecimal!
+  spotPrice: BigInt!
+  nftIdInventory: [BigInt!]!
+  liquidity: BigInt!
+  erc20Contract:String!
 }
 
-type DailyETHPoolStat @entity {
+
+type Swap @entity {
   id: ID!
-  dayTimestamp: BigInt
-  dayString: String
-  nftContract: String
-  erc20Contract: String
-  numSwaps: BigInt
-  swapVolumeETH: BigInt
-  approxPoolFees: BigInt
-  approxProtocolFees: BigInt
-  approxPoolRevenue: BigInt
-  approxPoolSpent: BigInt
-  ethDeposited: BigInt
-  ethWithdrawn: BigInt
-  nftsDeposited: BigInt
-  nftsWithdrawn: BigInt
-  numUserBuys: BigInt
-  numUserSells: BigInt
+  nft: String!
+  pair: String!
+  txHash: String!
+  nftIds: String!
+  cost: BigInt
+  price: BigInt!
+  token:String!
+  nftRecipient:String!
+  tokenRecipient:String!
+  timestamp: BigInt
 }
 
-type DailyETHPairStat @entity {
-  id: ID!
-  pair: String
-  dayTimestamp: BigInt
-  dayString: String
-  nftContract: String
-  erc20Contract: String
-  numSwaps: BigInt
-  swapVolumeETH: BigInt
-  approxPairFees: BigInt
-  approxProtocolFees: BigInt
-  approxPairRevenue: BigInt
-  approxPairSpent: BigInt
-  ethDeposited: BigInt
-  ethWithdrawn: BigInt
-  nftsDeposited: BigInt
-  nftsWithdrawn: BigInt
-  minSpotAsk: BigInt
-  maxSpotBid: BigInt
-  numUserBuys: BigInt
-  numUserSells: BigInt
-}
-
-type DailyETHProtocolStat @entity {
-  id: ID!
-  dayTimestamp: BigInt
-  dayString: String
-  numSwaps: BigInt
-  swapVolumeETH: BigInt
-  approxPoolFees: BigInt
-  approxProtocolFees: BigInt
-  approxPoolRevenue: BigInt
-  approxPoolSpent: BigInt
-  ethDeposited: BigInt
-  ethWithdrawn: BigInt
-  numPoolsCreated: BigInt
-  numPairsCreated: BigInt
-  nftsDeposited: BigInt
-  nftsWithdrawn: BigInt
-  numUserBuys: BigInt
-  numUserSells: BigInt
-}
 
 type BondingCurveStatusUpdate @entity {
   id: ID!
@@ -151,10 +81,10 @@ type SpotPrice @entity {
   id: ID!
   newSpotPrice: BigInt! # uint128
   updateTx: String
-  nft: String
+  nft: String!
   pair: String
   blockNumber: BigInt
-  timestamp: BigInt
+  timestamp: BigInt!
 }
 
 type ProtocolFeeMultiplier @entity {

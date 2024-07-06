@@ -5,13 +5,11 @@ import {
   NFTWithdrawal as NFTWithdrawalEvent,
   OwnershipTransferred as OwnershipTransferredEvent,
   SpotPriceUpdate as SpotPriceUpdateEvent,
-  SwapNFTInPair as SwapNFTInPairEvent,
-  SwapNFTOutPair as SwapNFTOutPairEvent,
   TokenDeposit as TokenDepositEvent,
   TokenWithdrawal as TokenWithdrawalEvent,
-  WithdrawAllETHCall,
+  WithdrawERC20Call,
   WithdrawERC721Call
-} from "../generated/templates/LSSVMPairEnumerableETH/LSSVMPairEnumerableETH"
+} from "../generated/templates/LSSVMPairEnumerableERC20/LSSVMPairEnumerableERC20"
 import {
   OwnershipTransferred,
   Pair,
@@ -28,17 +26,6 @@ export function handleAssetRecipientChange(
   }
   pair.save()
 }
-export function handleWithdrawERC721(call:WithdrawERC721Call):void{
-  let pair = Pair.load(call.inputs.a.toString())!
-  pair.nftIdInventory = arraySubtraction(pair.nftIdInventory,call.inputs.nftIds)
-  pair.save();
-}
-export function handleWithdrawAllETH(call:WithdrawAllETHCall):void{
-  let pair = Pair.load(call.to.toHexString())!
-  pair.liquidity=BigInt.fromString("0")
-  pair.save();
-}
-
 
 export function handleDeltaUpdate(event: DeltaUpdateEvent): void {
   let pair = Pair.load(event.address.toHexString())!
@@ -56,17 +43,9 @@ export function handleFeeUpdate(event: FeeUpdateEvent): void {
   }
 }
 
-
 export function handleOwnershipTransferred(
   event: OwnershipTransferredEvent
 ): void {
-  let entity = new OwnershipTransferred(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.newOwner = event.params.newOwner
-  entity.pair = event.address.toHexString()
-  entity.timestamp = event.block.timestamp
-  entity.save()
   let pair = (Pair.load(event.address.toHexString())!)
   if (pair) {
     pair.owner = event.params.newOwner.toHexString()
@@ -83,6 +62,17 @@ export function handleSpotPriceUpdate(event: SpotPriceUpdateEvent): void {
 }
 
 
+
+export function handleWithdrawERC721(call:WithdrawERC721Call):void{
+  let pair = Pair.load(call.inputs.a.toString())!
+  pair.nftIdInventory = arraySubtraction(pair.nftIdInventory,call.inputs.nftIds)
+  pair.save();
+}
+export function handleWithdrawERC20(call:WithdrawERC20Call):void{
+  let pair = Pair.load(call.inputs.a.toString())!
+  pair.liquidity=pair.liquidity.minus(call.inputs.amount)
+  pair.save();
+}
 
 export function handleTokenDeposit(
   event: TokenDepositEvent
